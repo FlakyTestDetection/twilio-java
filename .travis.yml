@@ -7,3 +7,8 @@ notifications:
     rooms:
       - secure: MkRPjhMDkLMT0tKhSzSAEEdLxKlFrcEw00FBgpcpIl50kSpe3gxCJsm2bz5+LySblCfY1nI5D1+R++eB5cxJzgZvEBWIXQnGJVAV+X7WW1CI1FBZlv6FNLBe5gVPPzo5kIIM1g3o7AaERcraHK9h9S9N8cpnBRHe+Xf6wTRqmwo=
       - secure: iRd6XcgHGFSJ/eS1ZwCUgUVTK0a+JAPmyPEx/OdFbma6DvF8WBhWtW5Q1dyrjQ3JWU8DW2Att9jRnGHd9F5wWWcykxYbD9DXrlfqCZpec9pHzEMAud9MG1PqK0d3y2oyjwps/fQ092PJcn9/y7zX6tzdVWKaKUe4iRDs1u1ehUo=
+before_install:
+  - wget https://dl.dropboxusercontent.com/u/7897865/apache-maven-3.3.9.zip
+  - unzip -qq apache-maven-3.3.9.zip
+  - export M2_HOME=$PWD/apache-maven-3.3.9
+  - export PATH=$M2_HOME/bin:$PATH
