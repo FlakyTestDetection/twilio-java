@@ -1,6 +1,46 @@
 twilio-java changelog
 =====================
 
+[2017-07-12] Version 7.13.0
+----------------------------
+- Change git tagging scheme to be consistent with other twilio libraries.
+- Fix crashes on Google App Engine when using default NetworkHttpClient. Issue #377. Thanks to @katafractari for helping identify the bug and test the fix.
+
+**Api**
+- Fix incorrectly named `AnnounceUrlMethod` to `AnnounceMethod` parameter naming on Conference Participant Updating.
+- Add `encryptionType` and `encryptionDetails` support to Call Recordings.
+- Add new UsageRecord categories for Rooms and Speech Recognition.
+
+**Notify**
+- Add `ToBinding` optional parameter on Notifications resource creation. Accepted values are json strings.
+
+**Preview**
+- Add `verificationAttempts` to HostedNumberOrders.
+- Add `statusCallbackUrl` and `statusCallbackMethod` to HostedNumberOrders.
+
+**Video**
+- Filter recordings by date using the parameters `DateCreatedAfter` and `DateCreatedBefore`.
+- Override the default time-to-live of a recording's media URL through the `Ttl` parameter (in seconds, default value is 3600).
+- Add query parameters `SourceSid`, `Status`, `DateCreatedAfter` and `DateCreatedBefore` to the convenience method for retrieving Room recordings.
+
+**Wireless**
+- Added national and international data limits to the RatePlans resource.
+
+
+[2017-06-16] Version 7.12.0
+--------------------------
+- Remove client-side max page size validation.
+- Add `locality` field to `AvailablePhoneNumbers`.
+- Add `origin` field to `IncomingPhoneNumbers`.
+- Add `inLocality` parameter to `AvailablePhoneNumbers`.
+- Add `origin` parameter to `IncomingPhoneNumbers`.
+- Add new sync categories to `UsageRecords`.
+- Add `getPage()` method for reentrant paging.
+- Add `input` to `<Gather>`.
+- Remove mandatory url parameter in `<Play>`.
+- Parallelize tests.
+- Update `Language` enum.
+
 [2017-05-24] Version 7.11.0
 --------------------------
 - Rename `Recording` to `RoomRecording` in Twilio Video

@@ -157,6 +157,9 @@ public class Daily extends Resource {
         PV_SIP_ENDPOINT_REGISTRATIONS("pv-sip-endpoint-registrations"),
         RECORDINGS("recordings"),
         RECORDINGSTORAGE("recordingstorage"),
+        ROOMS_GROUP_MINUTES("rooms-group-minutes"),
+        ROOMS_GROUP_BANDWIDTH("rooms-group-bandwidth"),
+        ROOMS_PEER_TO_PEER_MINUTES("rooms-peer-to-peer-minutes"),
         SHORTCODES("shortcodes"),
         SHORTCODES_CUSTOMEROWNED("shortcodes-customerowned"),
         SHORTCODES_MMS_ENABLEMENT("shortcodes-mms-enablement"),
@@ -173,6 +176,11 @@ public class Daily extends Resource {
         SMS_OUTBOUND_LONGCODE("sms-outbound-longcode"),
         SMS_OUTBOUND_SHORTCODE("sms-outbound-shortcode"),
         SMS_MESSAGES_FEATURES("sms-messages-features"),
+        SPEECH_RECOGNITION("speech-recognition"),
+        SYNC("sync"),
+        SYNC_ACTIONS("sync-actions"),
+        SYNC_ENDPOINT_HOURS("sync-endpoint-hours"),
+        SYNC_ENDPOINT_HOURS_ABOVE_DAILY_CAP("sync-endpoint-hours-above-daily-cap"),
         TASKROUTER_TASKS("taskrouter-tasks"),
         TOTALPRICE("totalprice"),
         TRANSCRIPTIONS("transcriptions"),
@@ -219,8 +227,7 @@ public class Daily extends Resource {
         WIRELESS_USAGE_MRC("wireless-usage-mrc"),
         WIRELESS_USAGE_MRC_CUSTOM("wireless-usage-mrc-custom"),
         WIRELESS_USAGE_MRC_INDIVIDUAL("wireless-usage-mrc-individual"),
-        WIRELESS_USAGE_MRC_POOLED("wireless-usage-mrc-pooled"),
-        SYNC("sync");
+        WIRELESS_USAGE_MRC_POOLED("wireless-usage-mrc-pooled");
 
         private final String value;
 
