@@ -55,11 +55,14 @@ public class NetworkHttpClient extends HttpClient {
             clientBuilder.useSystemProperties();
         }
 
+        PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager();
+	      connectionManager.setDefaultMaxPerRoute(10);
+	      connectionManager.setMaxTotal(10*2);
+
         clientBuilder
-            .setConnectionManager(new PoolingHttpClientConnectionManager())
+            .setConnectionManager(connectionManager)
             .setDefaultRequestConfig(config)
-            .setDefaultHeaders(headers)
-            .setMaxConnPerRoute(10);
+            .setDefaultHeaders(headers);
 
         client = clientBuilder.build();
     }

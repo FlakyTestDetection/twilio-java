@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.MoreObjects;
 import com.twilio.base.Resource;
+import com.twilio.converter.Converter;
 import com.twilio.converter.DateConverter;
 import com.twilio.converter.Promoter;
 import com.twilio.exception.ApiConnectionException;
@@ -35,7 +36,7 @@ import java.util.Objects;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Message extends Resource {
-    private static final long serialVersionUID = 68490171213295L;
+    private static final long serialVersionUID = 240696203452729L;
 
     public enum OrderType {
         ASC("asc"),
@@ -175,10 +176,13 @@ public class Message extends Resource {
     private final String channelSid;
     private final DateTime dateCreated;
     private final DateTime dateUpdated;
+    private final String lastUpdatedBy;
     private final Boolean wasEdited;
     private final String from;
     private final String body;
     private final Integer index;
+    private final String type;
+    private final Map<String, Object> media;
     private final URI url;
 
     @JsonCreator
@@ -198,6 +202,8 @@ public class Message extends Resource {
                     final String dateCreated, 
                     @JsonProperty("date_updated")
                     final String dateUpdated, 
+                    @JsonProperty("last_updated_by")
+                    final String lastUpdatedBy, 
                     @JsonProperty("was_edited")
                     final Boolean wasEdited, 
                     @JsonProperty("from")
@@ -206,6 +212,10 @@ public class Message extends Resource {
                     final String body, 
                     @JsonProperty("index")
                     final Integer index, 
+                    @JsonProperty("type")
+                    final String type, 
+                    @JsonProperty("media")
+                    final Map<String, Object> media, 
                     @JsonProperty("url")
                     final URI url) {
         this.sid = sid;
@@ -216,10 +226,13 @@ public class Message extends Resource {
         this.channelSid = channelSid;
         this.dateCreated = DateConverter.iso8601DateTimeFromString(dateCreated);
         this.dateUpdated = DateConverter.iso8601DateTimeFromString(dateUpdated);
+        this.lastUpdatedBy = lastUpdatedBy;
         this.wasEdited = wasEdited;
         this.from = from;
         this.body = body;
         this.index = index;
+        this.type = type;
+        this.media = media;
         this.url = url;
     }
 
@@ -296,6 +309,15 @@ public class Message extends Resource {
     }
 
     /**
+     * Returns The The last_updated_by.
+     * 
+     * @return The last_updated_by
+     */
+    public final String getLastUpdatedBy() {
+        return this.lastUpdatedBy;
+    }
+
+    /**
      * Returns The The was_edited.
      * 
      * @return The was_edited
@@ -332,6 +354,24 @@ public class Message extends Resource {
     }
 
     /**
+     * Returns The The type.
+     * 
+     * @return The type
+     */
+    public final String getType() {
+        return this.type;
+    }
+
+    /**
+     * Returns The The media.
+     * 
+     * @return The media
+     */
+    public final Map<String, Object> getMedia() {
+        return this.media;
+    }
+
+    /**
      * Returns The The url.
      * 
      * @return The url
@@ -360,10 +400,13 @@ public class Message extends Resource {
                Objects.equals(channelSid, other.channelSid) && 
                Objects.equals(dateCreated, other.dateCreated) && 
                Objects.equals(dateUpdated, other.dateUpdated) && 
+               Objects.equals(lastUpdatedBy, other.lastUpdatedBy) && 
                Objects.equals(wasEdited, other.wasEdited) && 
                Objects.equals(from, other.from) && 
                Objects.equals(body, other.body) && 
                Objects.equals(index, other.index) && 
+               Objects.equals(type, other.type) && 
+               Objects.equals(media, other.media) && 
                Objects.equals(url, other.url);
     }
 
@@ -377,10 +420,13 @@ public class Message extends Resource {
                             channelSid,
                             dateCreated,
                             dateUpdated,
+                            lastUpdatedBy,
                             wasEdited,
                             from,
                             body,
                             index,
+                            type,
+                            media,
                             url);
     }
 
@@ -395,10 +441,13 @@ public class Message extends Resource {
                           .add("channelSid", channelSid)
                           .add("dateCreated", dateCreated)
                           .add("dateUpdated", dateUpdated)
+                          .add("lastUpdatedBy", lastUpdatedBy)
                           .add("wasEdited", wasEdited)
                           .add("from", from)
                           .add("body", body)
                           .add("index", index)
+                          .add("type", type)
+                          .add("media", media)
                           .add("url", url)
                           .toString();
     }

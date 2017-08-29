@@ -1,6 +1,41 @@
 twilio-java changelog
 =====================
 
+[2017-08-25] Version 7.14.4
+----------------------------
+**Video**
+- New `media_region` parameter when creating a room, which controls which region media will be served out of.
+
+
+[2017-08-22] Version 7.14.3
+----------------------------
+**Library**
+- Add `getLastRequest` and `getLastResponse` methods to HttpClient class to provide debugging information.
+
+**Api**
+- Update `status` enum for Recordings to include 'failed'
+- Add `error_code` property on Recordings
+
+**Chat**
+- Add mutable parameters for channel, members and messages
+
+
+[2017-08-18] Version 7.14.2
+----------------------------
+**Api**
+- Add VoiceReceiveMode {'voice', 'fax'} option to IncomingPhoneNumber UPDATE requests
+
+**Chat**
+- Add channel message media information
+- Add service instance message media information
+
+**Preview**
+- Add DeployedDevices.
+
+**Sync**
+- Add support for Service Instance unique names
+
+
 [2017-08-11] Version 7.14.1
 ----------------------------
 **Api**
