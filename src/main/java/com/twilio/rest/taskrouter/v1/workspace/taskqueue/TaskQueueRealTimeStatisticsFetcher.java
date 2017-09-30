@@ -5,10 +5,9 @@
  *       /       /
  */
 
-package com.twilio.rest.taskrouter.v1.workspace.worker;
+package com.twilio.rest.taskrouter.v1.workspace.taskqueue;
 
 import com.twilio.base.Fetcher;
-import com.twilio.converter.DateConverter;
 import com.twilio.exception.ApiConnectionException;
 import com.twilio.exception.ApiException;
 import com.twilio.exception.RestException;
@@ -17,59 +16,22 @@ import com.twilio.http.Request;
 import com.twilio.http.Response;
 import com.twilio.http.TwilioRestClient;
 import com.twilio.rest.Domains;
-import org.joda.time.DateTime;
 
-public class WorkerStatisticsFetcher extends Fetcher<WorkerStatistics> {
+public class TaskQueueRealTimeStatisticsFetcher extends Fetcher<TaskQueueRealTimeStatistics> {
     private final String pathWorkspaceSid;
-    private final String pathWorkerSid;
-    private Integer minutes;
-    private DateTime startDate;
-    private DateTime endDate;
+    private final String pathTaskQueueSid;
     private String taskChannel;
 
     /**
-     * Construct a new WorkerStatisticsFetcher.
+     * Construct a new TaskQueueRealTimeStatisticsFetcher.
      * 
      * @param pathWorkspaceSid The workspace_sid
-     * @param pathWorkerSid The worker_sid
+     * @param pathTaskQueueSid The task_queue_sid
      */
-    public WorkerStatisticsFetcher(final String pathWorkspaceSid, 
-                                   final String pathWorkerSid) {
+    public TaskQueueRealTimeStatisticsFetcher(final String pathWorkspaceSid, 
+                                              final String pathTaskQueueSid) {
         this.pathWorkspaceSid = pathWorkspaceSid;
-        this.pathWorkerSid = pathWorkerSid;
-    }
-
-    /**
-     * The minutes.
-     * 
-     * @param minutes The minutes
-     * @return this
-     */
-    public WorkerStatisticsFetcher setMinutes(final Integer minutes) {
-        this.minutes = minutes;
-        return this;
-    }
-
-    /**
-     * The start_date.
-     * 
-     * @param startDate The start_date
-     * @return this
-     */
-    public WorkerStatisticsFetcher setStartDate(final DateTime startDate) {
-        this.startDate = startDate;
-        return this;
-    }
-
-    /**
-     * The end_date.
-     * 
-     * @param endDate The end_date
-     * @return this
-     */
-    public WorkerStatisticsFetcher setEndDate(final DateTime endDate) {
-        this.endDate = endDate;
-        return this;
+        this.pathTaskQueueSid = pathTaskQueueSid;
     }
 
     /**
@@ -78,7 +40,7 @@ public class WorkerStatisticsFetcher extends Fetcher<WorkerStatistics> {
      * @param taskChannel The task_channel
      * @return this
      */
-    public WorkerStatisticsFetcher setTaskChannel(final String taskChannel) {
+    public TaskQueueRealTimeStatisticsFetcher setTaskChannel(final String taskChannel) {
         this.taskChannel = taskChannel;
         return this;
     }
@@ -87,15 +49,15 @@ public class WorkerStatisticsFetcher extends Fetcher<WorkerStatistics> {
      * Make the request to the Twilio API to perform the fetch.
      * 
      * @param client TwilioRestClient with which to make the request
-     * @return Fetched WorkerStatistics
+     * @return Fetched TaskQueueRealTimeStatistics
      */
     @Override
     @SuppressWarnings("checkstyle:linelength")
-    public WorkerStatistics fetch(final TwilioRestClient client) {
+    public TaskQueueRealTimeStatistics fetch(final TwilioRestClient client) {
         Request request = new Request(
             HttpMethod.GET,
             Domains.TASKROUTER.toString(),
-            "/v1/Workspaces/" + this.pathWorkspaceSid + "/Workers/" + this.pathWorkerSid + "/Statistics",
+            "/v1/Workspaces/" + this.pathWorkspaceSid + "/TaskQueues/" + this.pathTaskQueueSid + "/RealTimeStatistics",
             client.getRegion()
         );
 
@@ -103,7 +65,7 @@ public class WorkerStatisticsFetcher extends Fetcher<WorkerStatistics> {
         Response response = client.request(request);
 
         if (response == null) {
-            throw new ApiConnectionException("WorkerStatistics fetch failed: Unable to connect to server");
+            throw new ApiConnectionException("TaskQueueRealTimeStatistics fetch failed: Unable to connect to server");
         } else if (!TwilioRestClient.SUCCESS.apply(response.getStatusCode())) {
             RestException restException = RestException.fromJson(response.getStream(), client.getObjectMapper());
             if (restException == null) {
@@ -119,7 +81,7 @@ public class WorkerStatisticsFetcher extends Fetcher<WorkerStatistics> {
             );
         }
 
-        return WorkerStatistics.fromJson(response.getStream(), client.getObjectMapper());
+        return TaskQueueRealTimeStatistics.fromJson(response.getStream(), client.getObjectMapper());
     }
 
     /**
@@ -128,18 +90,6 @@ public class WorkerStatisticsFetcher extends Fetcher<WorkerStatistics> {
      * @param request Request to add query string arguments to
      */
     private void addQueryParams(final Request request) {
-        if (minutes != null) {
-            request.addQueryParam("Minutes", minutes.toString());
-        }
-
-        if (startDate != null) {
-            request.addQueryParam("StartDate", startDate.toString());
-        }
-
-        if (endDate != null) {
-            request.addQueryParam("EndDate", endDate.toString());
-        }
-
         if (taskChannel != null) {
             request.addQueryParam("TaskChannel", taskChannel);
         }

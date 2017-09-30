@@ -33,31 +33,31 @@ import java.util.Map;
 import java.util.Objects;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class WorkersStatistics extends Resource {
-    private static final long serialVersionUID = 181724864721054L;
+public class WorkersRealTimeStatistics extends Resource {
+    private static final long serialVersionUID = 59891376471139L;
 
     /**
-     * Create a WorkersStatisticsFetcher to execute fetch.
+     * Create a WorkersRealTimeStatisticsFetcher to execute fetch.
      * 
      * @param pathWorkspaceSid The workspace_sid
-     * @return WorkersStatisticsFetcher capable of executing the fetch
+     * @return WorkersRealTimeStatisticsFetcher capable of executing the fetch
      */
-    public static WorkersStatisticsFetcher fetcher(final String pathWorkspaceSid) {
-        return new WorkersStatisticsFetcher(pathWorkspaceSid);
+    public static WorkersRealTimeStatisticsFetcher fetcher(final String pathWorkspaceSid) {
+        return new WorkersRealTimeStatisticsFetcher(pathWorkspaceSid);
     }
 
     /**
-     * Converts a JSON String into a WorkersStatistics object using the provided
-     * ObjectMapper.
+     * Converts a JSON String into a WorkersRealTimeStatistics object using the
+     * provided ObjectMapper.
      * 
      * @param json Raw JSON String
      * @param objectMapper Jackson ObjectMapper
-     * @return WorkersStatistics object represented by the provided JSON
+     * @return WorkersRealTimeStatistics object represented by the provided JSON
      */
-    public static WorkersStatistics fromJson(final String json, final ObjectMapper objectMapper) {
+    public static WorkersRealTimeStatistics fromJson(final String json, final ObjectMapper objectMapper) {
         // Convert all checked exceptions to Runtime
         try {
-            return objectMapper.readValue(json, WorkersStatistics.class);
+            return objectMapper.readValue(json, WorkersRealTimeStatistics.class);
         } catch (final JsonMappingException | JsonParseException e) {
             throw new ApiException(e.getMessage(), e);
         } catch (final IOException e) {
@@ -66,17 +66,17 @@ public class WorkersStatistics extends Resource {
     }
 
     /**
-     * Converts a JSON InputStream into a WorkersStatistics object using the
+     * Converts a JSON InputStream into a WorkersRealTimeStatistics object using the
      * provided ObjectMapper.
      * 
      * @param json Raw JSON InputStream
      * @param objectMapper Jackson ObjectMapper
-     * @return WorkersStatistics object represented by the provided JSON
+     * @return WorkersRealTimeStatistics object represented by the provided JSON
      */
-    public static WorkersStatistics fromJson(final InputStream json, final ObjectMapper objectMapper) {
+    public static WorkersRealTimeStatistics fromJson(final InputStream json, final ObjectMapper objectMapper) {
         // Convert all checked exceptions to Runtime
         try {
-            return objectMapper.readValue(json, WorkersStatistics.class);
+            return objectMapper.readValue(json, WorkersRealTimeStatistics.class);
         } catch (final JsonMappingException | JsonParseException e) {
             throw new ApiException(e.getMessage(), e);
         } catch (final IOException e) {
@@ -84,46 +84,28 @@ public class WorkersStatistics extends Resource {
         }
     }
 
-    private final Map<String, Object> realtime;
-    private final Map<String, Object> cumulative;
     private final String accountSid;
+    private final List<Map<String, Object>> activityStatistics;
+    private final Integer totalWorkers;
     private final String workspaceSid;
     private final URI url;
 
     @JsonCreator
-    private WorkersStatistics(@JsonProperty("realtime")
-                              final Map<String, Object> realtime, 
-                              @JsonProperty("cumulative")
-                              final Map<String, Object> cumulative, 
-                              @JsonProperty("account_sid")
-                              final String accountSid, 
-                              @JsonProperty("workspace_sid")
-                              final String workspaceSid, 
-                              @JsonProperty("url")
-                              final URI url) {
-        this.realtime = realtime;
-        this.cumulative = cumulative;
+    private WorkersRealTimeStatistics(@JsonProperty("account_sid")
+                                      final String accountSid, 
+                                      @JsonProperty("activity_statistics")
+                                      final List<Map<String, Object>> activityStatistics, 
+                                      @JsonProperty("total_workers")
+                                      final Integer totalWorkers, 
+                                      @JsonProperty("workspace_sid")
+                                      final String workspaceSid, 
+                                      @JsonProperty("url")
+                                      final URI url) {
         this.accountSid = accountSid;
+        this.activityStatistics = activityStatistics;
+        this.totalWorkers = totalWorkers;
         this.workspaceSid = workspaceSid;
         this.url = url;
-    }
-
-    /**
-     * Returns The The realtime.
-     * 
-     * @return The realtime
-     */
-    public final Map<String, Object> getRealtime() {
-        return this.realtime;
-    }
-
-    /**
-     * Returns The The cumulative.
-     * 
-     * @return The cumulative
-     */
-    public final Map<String, Object> getCumulative() {
-        return this.cumulative;
     }
 
     /**
@@ -133,6 +115,24 @@ public class WorkersStatistics extends Resource {
      */
     public final String getAccountSid() {
         return this.accountSid;
+    }
+
+    /**
+     * Returns The The activity_statistics.
+     * 
+     * @return The activity_statistics
+     */
+    public final List<Map<String, Object>> getActivityStatistics() {
+        return this.activityStatistics;
+    }
+
+    /**
+     * Returns The The total_workers.
+     * 
+     * @return The total_workers
+     */
+    public final Integer getTotalWorkers() {
+        return this.totalWorkers;
     }
 
     /**
@@ -163,20 +163,20 @@ public class WorkersStatistics extends Resource {
             return false;
         }
 
-        WorkersStatistics other = (WorkersStatistics) o;
+        WorkersRealTimeStatistics other = (WorkersRealTimeStatistics) o;
 
-        return Objects.equals(realtime, other.realtime) && 
-               Objects.equals(cumulative, other.cumulative) && 
-               Objects.equals(accountSid, other.accountSid) && 
+        return Objects.equals(accountSid, other.accountSid) && 
+               Objects.equals(activityStatistics, other.activityStatistics) && 
+               Objects.equals(totalWorkers, other.totalWorkers) && 
                Objects.equals(workspaceSid, other.workspaceSid) && 
                Objects.equals(url, other.url);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(realtime,
-                            cumulative,
-                            accountSid,
+        return Objects.hash(accountSid,
+                            activityStatistics,
+                            totalWorkers,
                             workspaceSid,
                             url);
     }
@@ -184,9 +184,9 @@ public class WorkersStatistics extends Resource {
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                          .add("realtime", realtime)
-                          .add("cumulative", cumulative)
                           .add("accountSid", accountSid)
+                          .add("activityStatistics", activityStatistics)
+                          .add("totalWorkers", totalWorkers)
                           .add("workspaceSid", workspaceSid)
                           .add("url", url)
                           .toString();

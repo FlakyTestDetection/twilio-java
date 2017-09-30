@@ -5,7 +5,7 @@
  *       /       /
  */
 
-package com.twilio.rest.taskrouter.v1.workspace.worker;
+package com.twilio.rest.taskrouter.v1.workspace.workflow;
 
 import com.twilio.base.Fetcher;
 import com.twilio.converter.DateConverter;
@@ -19,24 +19,36 @@ import com.twilio.http.TwilioRestClient;
 import com.twilio.rest.Domains;
 import org.joda.time.DateTime;
 
-public class WorkerStatisticsFetcher extends Fetcher<WorkerStatistics> {
+public class WorkflowCumulativeStatisticsFetcher extends Fetcher<WorkflowCumulativeStatistics> {
     private final String pathWorkspaceSid;
-    private final String pathWorkerSid;
+    private final String pathWorkflowSid;
+    private DateTime endDate;
     private Integer minutes;
     private DateTime startDate;
-    private DateTime endDate;
     private String taskChannel;
+    private String splitByWaitTime;
 
     /**
-     * Construct a new WorkerStatisticsFetcher.
+     * Construct a new WorkflowCumulativeStatisticsFetcher.
      * 
      * @param pathWorkspaceSid The workspace_sid
-     * @param pathWorkerSid The worker_sid
+     * @param pathWorkflowSid The workflow_sid
      */
-    public WorkerStatisticsFetcher(final String pathWorkspaceSid, 
-                                   final String pathWorkerSid) {
+    public WorkflowCumulativeStatisticsFetcher(final String pathWorkspaceSid, 
+                                               final String pathWorkflowSid) {
         this.pathWorkspaceSid = pathWorkspaceSid;
-        this.pathWorkerSid = pathWorkerSid;
+        this.pathWorkflowSid = pathWorkflowSid;
+    }
+
+    /**
+     * The end_date.
+     * 
+     * @param endDate The end_date
+     * @return this
+     */
+    public WorkflowCumulativeStatisticsFetcher setEndDate(final DateTime endDate) {
+        this.endDate = endDate;
+        return this;
     }
 
     /**
@@ -45,7 +57,7 @@ public class WorkerStatisticsFetcher extends Fetcher<WorkerStatistics> {
      * @param minutes The minutes
      * @return this
      */
-    public WorkerStatisticsFetcher setMinutes(final Integer minutes) {
+    public WorkflowCumulativeStatisticsFetcher setMinutes(final Integer minutes) {
         this.minutes = minutes;
         return this;
     }
@@ -56,19 +68,8 @@ public class WorkerStatisticsFetcher extends Fetcher<WorkerStatistics> {
      * @param startDate The start_date
      * @return this
      */
-    public WorkerStatisticsFetcher setStartDate(final DateTime startDate) {
+    public WorkflowCumulativeStatisticsFetcher setStartDate(final DateTime startDate) {
         this.startDate = startDate;
-        return this;
-    }
-
-    /**
-     * The end_date.
-     * 
-     * @param endDate The end_date
-     * @return this
-     */
-    public WorkerStatisticsFetcher setEndDate(final DateTime endDate) {
-        this.endDate = endDate;
         return this;
     }
 
@@ -78,8 +79,19 @@ public class WorkerStatisticsFetcher extends Fetcher<WorkerStatistics> {
      * @param taskChannel The task_channel
      * @return this
      */
-    public WorkerStatisticsFetcher setTaskChannel(final String taskChannel) {
+    public WorkflowCumulativeStatisticsFetcher setTaskChannel(final String taskChannel) {
         this.taskChannel = taskChannel;
+        return this;
+    }
+
+    /**
+     * The split_by_wait_time.
+     * 
+     * @param splitByWaitTime The split_by_wait_time
+     * @return this
+     */
+    public WorkflowCumulativeStatisticsFetcher setSplitByWaitTime(final String splitByWaitTime) {
+        this.splitByWaitTime = splitByWaitTime;
         return this;
     }
 
@@ -87,15 +99,15 @@ public class WorkerStatisticsFetcher extends Fetcher<WorkerStatistics> {
      * Make the request to the Twilio API to perform the fetch.
      * 
      * @param client TwilioRestClient with which to make the request
-     * @return Fetched WorkerStatistics
+     * @return Fetched WorkflowCumulativeStatistics
      */
     @Override
     @SuppressWarnings("checkstyle:linelength")
-    public WorkerStatistics fetch(final TwilioRestClient client) {
+    public WorkflowCumulativeStatistics fetch(final TwilioRestClient client) {
         Request request = new Request(
             HttpMethod.GET,
             Domains.TASKROUTER.toString(),
-            "/v1/Workspaces/" + this.pathWorkspaceSid + "/Workers/" + this.pathWorkerSid + "/Statistics",
+            "/v1/Workspaces/" + this.pathWorkspaceSid + "/Workflows/" + this.pathWorkflowSid + "/CumulativeStatistics",
             client.getRegion()
         );
 
@@ -103,7 +115,7 @@ public class WorkerStatisticsFetcher extends Fetcher<WorkerStatistics> {
         Response response = client.request(request);
 
         if (response == null) {
-            throw new ApiConnectionException("WorkerStatistics fetch failed: Unable to connect to server");
+            throw new ApiConnectionException("WorkflowCumulativeStatistics fetch failed: Unable to connect to server");
         } else if (!TwilioRestClient.SUCCESS.apply(response.getStatusCode())) {
             RestException restException = RestException.fromJson(response.getStream(), client.getObjectMapper());
             if (restException == null) {
@@ -119,7 +131,7 @@ public class WorkerStatisticsFetcher extends Fetcher<WorkerStatistics> {
             );
         }
 
-        return WorkerStatistics.fromJson(response.getStream(), client.getObjectMapper());
+        return WorkflowCumulativeStatistics.fromJson(response.getStream(), client.getObjectMapper());
     }
 
     /**
@@ -128,6 +140,10 @@ public class WorkerStatisticsFetcher extends Fetcher<WorkerStatistics> {
      * @param request Request to add query string arguments to
      */
     private void addQueryParams(final Request request) {
+        if (endDate != null) {
+            request.addQueryParam("EndDate", endDate.toString());
+        }
+
         if (minutes != null) {
             request.addQueryParam("Minutes", minutes.toString());
         }
@@ -136,12 +152,12 @@ public class WorkerStatisticsFetcher extends Fetcher<WorkerStatistics> {
             request.addQueryParam("StartDate", startDate.toString());
         }
 
-        if (endDate != null) {
-            request.addQueryParam("EndDate", endDate.toString());
-        }
-
         if (taskChannel != null) {
             request.addQueryParam("TaskChannel", taskChannel);
+        }
+
+        if (splitByWaitTime != null) {
+            request.addQueryParam("SplitByWaitTime", splitByWaitTime);
         }
     }
 }

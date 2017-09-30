@@ -27,7 +27,7 @@ import java.net.URI;
 import static com.twilio.TwilioTest.serialize;
 import static org.junit.Assert.*;
 
-public class WorkerStatisticsTest {
+public class WorkersCumulativeStatisticsTest {
     @Mocked
     private TwilioRestClient twilioRestClient;
 
@@ -41,7 +41,7 @@ public class WorkerStatisticsTest {
         new NonStrictExpectations() {{
             Request request = new Request(HttpMethod.GET,
                                           Domains.TASKROUTER.toString(),
-                                          "/v1/Workspaces/WSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Workers/WKaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Statistics");
+                                          "/v1/Workspaces/WSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Workers/CumulativeStatistics");
             
             twilioRestClient.request(request);
             times = 1;
@@ -51,7 +51,7 @@ public class WorkerStatisticsTest {
         }};
 
         try {
-            WorkerStatistics.fetcher("WSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "WKaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa").fetch();
+            WorkersCumulativeStatistics.fetcher("WSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa").fetch();
             fail("Expected TwilioException to be thrown for 500");
         } catch (TwilioException e) {}
     }
@@ -60,11 +60,11 @@ public class WorkerStatisticsTest {
     public void testFetchResponse() {
         new NonStrictExpectations() {{
             twilioRestClient.request((Request) any);
-            result = new Response("{\"cumulative\": {\"reservations_created\": 100,\"reservations_accepted\": 100,\"reservations_rejected\": 100,\"reservations_timed_out\": 100,\"reservations_canceled\": 100,\"reservations_rescinded\": 100,\"activity_durations\": [{\"max\": 0,\"min\": 900,\"sid\": \"WAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"friendly_name\": \"Offline\",\"avg\": 1080,\"total\": 5400},{\"max\": 0,\"min\": 900,\"sid\": \"WAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"friendly_name\": \"Busy\",\"avg\": 1012,\"total\": 8100},{\"max\": 0,\"min\": 0,\"sid\": \"WAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"friendly_name\": \"Idle\",\"avg\": 0,\"total\": 0},{\"max\": 0,\"min\": 0,\"sid\": \"WAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"friendly_name\": \"Reserved\",\"avg\": 0,\"total\": 0}],\"start_time\": \"2008-01-02T00:00:00Z\",\"end_time\": \"2008-01-02T00:00:00Z\"},\"account_sid\": \"ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"workspace_sid\": \"WSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"worker_sid\": \"WKaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"url\": \"https://taskrouter.twilio.com/v1/Workspaces/WSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Workers/WKaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Statistics\"}", TwilioRestClient.HTTP_STATUS_CODE_OK);
+            result = new Response("{\"account_sid\": \"ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"workspace_sid\": \"WSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"url\": \"https://taskrouter.twilio.com/v1/Workspaces/WSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Workers/CumulativeStatistics\",\"reservations_created\": 100,\"reservations_accepted\": 100,\"reservations_rejected\": 100,\"reservations_timed_out\": 100,\"reservations_canceled\": 100,\"reservations_rescinded\": 100,\"activity_durations\": [{\"max\": 0,\"min\": 900,\"sid\": \"WAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"friendly_name\": \"Offline\",\"avg\": 1080,\"total\": 5400},{\"max\": 0,\"min\": 900,\"sid\": \"WAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"friendly_name\": \"Busy\",\"avg\": 1012,\"total\": 8100},{\"max\": 0,\"min\": 0,\"sid\": \"WAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"friendly_name\": \"Idle\",\"avg\": 0,\"total\": 0},{\"max\": 0,\"min\": 0,\"sid\": \"WAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"friendly_name\": \"Reserved\",\"avg\": 0,\"total\": 0}],\"start_time\": \"2015-07-30T20:00:00Z\",\"end_time\": \"2015-07-30T20:00:00Z\"}", TwilioRestClient.HTTP_STATUS_CODE_OK);
             twilioRestClient.getObjectMapper();
             result = new ObjectMapper();
         }};
 
-        assertNotNull(WorkerStatistics.fetcher("WSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "WKaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa").fetch());
+        assertNotNull(WorkersCumulativeStatistics.fetcher("WSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa").fetch());
     }
 }
